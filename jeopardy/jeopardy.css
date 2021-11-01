@@ -6,6 +6,11 @@
   #74119c
 */
 
+h1 {
+  text-align: center;
+}
+
+
 #jeopardy {
   text-align: center;
   font-size: 9pt;

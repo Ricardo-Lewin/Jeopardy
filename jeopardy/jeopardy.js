@@ -67,10 +67,10 @@ async function getCategory(catId) {
  */
 
 async function fillTable() {
-    let $body = $('<body>');
-    let $jeopardy = $('<table>'); // creates table
-    let $thead = $('<thead>')
-    let $tbody = $('<tbody>')
+    let $body = $('body');
+    let $htmlTable = $('<table id = "jeopardy"></table>'); 
+    let $thead = $('<thead></thead>')
+    let $tbody = $('<tbody></tbody>')
     let $tr = $('<tr>'); 
 
     
@@ -80,7 +80,7 @@ async function fillTable() {
         }
 
 
-    $jeopardy.append($thead).append($tr);
+    $htmlTable.append($thead).append($tr);
        
     for (let clueIdx = 0; clueIdx < NUM_CLUES_PER_CAT; clueIdx++) {
             let $tr = $('<tr>');
@@ -91,8 +91,9 @@ async function fillTable() {
 
             $tbody.append($tr);
 }
-    $jeopardy.append($tbody)
-    $jeopardy.appendTo($body);
+    $htmlTable.append($tbody)
+
+    $htmlTable.appendTo($body);
 };
 
 /** Handle clicking on a clue: show the question or answer.
@@ -155,6 +156,22 @@ async function setupAndStart() {
 
 /** On click of start / restart button, set up game. */
 //TODO:
+function startGame (){
+    const $button = $('<button id = "restart">Restart Game!</button>')
+    const $header = $('<h1>Jeopardy!</h1>')
+
+    $("body").append($header).append($button)
+}
+
+$("#restart").on("click", setupAndStart);
 
 /** On page load, add event handler for clicking clues */
 //TODO:
+$(async function () {
+    setupAndStart();
+    $("#jeopardy").on("click", "td", handleClick);
+  }
+);
+
+
+startGame();
