@@ -67,11 +67,11 @@ async function getCategory(catId) {
  */
 
 async function fillTable() {
-    let $body = $('body');
-    let $htmlTable = $('<table id = "jeopardy"></table>'); 
-    let $thead = $('<thead></thead>')
-    let $tbody = $('<tbody></tbody>')
-    let $tr = $('<tr>'); 
+    const $body = $('body');
+    const $htmlTable = $('<table id = "jeopardy"></table>'); 
+    const $thead = $('<thead></thead>')
+    const $tbody = $('<tbody></tbody>')
+    const $tr = $('<tr>'); 
 
     
 
@@ -86,7 +86,7 @@ async function fillTable() {
             let $tr = $('<tr>');
 
             for (let catIdx = 0; catIdx < NUM_CATEGORIES; catIdx++) {
-                $tr.append($('<td>').attr('id', `${catIdx}-${clueIdx}`).text('?'));
+                $tr.append($(`<td onclick="handleClick(${catIdx}, ${clueIdx})">`).attr('id', `${catIdx}-${clueIdx}`).text('?'));
             }
 
             $tbody.append($tr);
@@ -104,10 +104,9 @@ async function fillTable() {
  * - if currently "answer", ignore click
  * */
 
-function handleClick(evt) {
-    let id = evt.target.id;
-    let [catId, clueId] = id.split('-');
-    let clue = categories[catId].clues[clueId];
+function handleClick(catIdx, clueIdx) {
+    
+    let clue = categories[catIdx].clues[clueIdx];
 
     let msg;
 
@@ -120,20 +119,25 @@ function handleClick(evt) {
     } else {
         return //answer already shown, ignore
     }
-    $(`#${catId}-${clueId}`).html(msg);
+    $(`#${catIdx}-${clueIdx}`).html(msg);
 }
 
 /** Wipe the current Jeopardy board, show the loading spinner,
  * and update the button used to fetch data.
  */
 
+//TODO:
 function showLoadingView() {
-
+    const $img = $('<img src = "loading.gif">')
+    $("body").append($img)
 }
 
 /** Remove the loading spinner and update the button used to fetch data. */
-
+//TODO:
 function hideLoadingView() {
+    setTimeout(function() {
+        $('img').remove()
+    }, 800)
 }
 
 /** Start game:
@@ -152,26 +156,29 @@ async function setupAndStart() {
         categories.push(await getCategory(catId));
     }
     fillTable();
+    $("#start").remove();
 }
 
 /** On click of start / restart button, set up game. */
-//TODO:
-function startGame (){
-    const $button = $('<button id = "restart">Restart Game!</button>')
+function startGame () {
+    const $start = $('<button id="start">Start Game!</button>')
     const $header = $('<h1>Jeopardy!</h1>')
+    const $restart = $('<button id="restart">Restart Game!</button>')    
+    $("body").append($header).append($start).append($restart)
+    
+    $("#start").on("click", setupAndStart);
+    $("#restart").on("click", restartGame)
+    }
 
-    $("body").append($header).append($button)
+function restartGame () {
+    $("table").empty()
+    showLoadingView()
+    hideLoadingView()
+    setupAndStart()
 }
 
-$("#restart").on("click", setupAndStart);
+    
 
-/** On page load, add event handler for clicking clues */
-//TODO:
-$(async function () {
-    setupAndStart();
-    $("#jeopardy").on("click", "td", handleClick);
-  }
-);
-
-
-startGame();
+$( document ).ready(function() {
+    startGame();
+});
