@@ -20,6 +20,7 @@
 const NUM_CATEGORIES = 6;
 const NUM_CLUES_PER_CAT = 5;
 let categories = [];
+let gameStarted = false;
 
 
 /** Get NUM_CATEGORIES random category from API.
@@ -148,6 +149,10 @@ function hideLoadingView() {
  * */
 
 async function setupAndStart() {
+    if (gameStarted === true) {
+        alert('Game already started!');
+        return;
+    }
     let catIds = await getCategoryIds();
 
     categories = [];
@@ -156,7 +161,8 @@ async function setupAndStart() {
         categories.push(await getCategory(catId));
     }
     fillTable();
-    $("#start").remove();
+    gameStarted = true;
+    // $("#start").remove();
 }
 
 /** On click of start / restart button, set up game. */
@@ -171,6 +177,7 @@ function startGame () {
     }
 
 function restartGame () {
+    gameStarted = false;
     $("table").empty()
     showLoadingView()
     hideLoadingView()
